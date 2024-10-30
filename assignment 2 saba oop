@@ -1,0 +1,183 @@
+package a;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Scanner;
+
+class Contact {
+    private String S__FirstName;
+    private String S__LastName;
+    private String[] S__PhoneNumbers;
+    private String S__Affiliation = "";
+    private String S__Occupation = "";
+    private String S__Note = "";
+    private GregorianCalendar S__Dob;
+    private boolean S__Blocked = false;
+//constructor
+    public Contact(String S__FirstName, String S__LastName, String[] S__PhoneNumbers) {
+        this.S__FirstName = S__FirstName;
+        this.S__LastName = S__LastName;
+        this.S__PhoneNumbers = S__PhoneNumbers;
+    }
+
+    // Constructor with additional fields
+    public Contact(String S__FirstName, String S__LastName, String[] S__PhoneNumbers, String S__Affiliation, String S__Occupation, String S__Note, GregorianCalendar S__Dob) {
+        this.S__FirstName = S__FirstName;
+        this.S__LastName = S__LastName;
+        this.S__PhoneNumbers = S__PhoneNumbers;
+        this.S__Affiliation = S__Affiliation;
+        this.S__Occupation = S__Occupation;
+        this.S__Note = S__Note;
+        this.S__Dob = S__Dob;
+    }
+
+    public void setBlocked(boolean S__Blocked) {
+        this.S__Blocked = S__Blocked;
+    }
+
+    public boolean isBlocked() {
+        return S__Blocked;
+    }
+
+    public void setFirstName(String S__FirstName) {
+        this.S__FirstName = S__FirstName;
+    }
+
+    public String getFirstName() {
+        return S__FirstName;
+    }
+
+    public void replaceNumber(String old, String S__New) {
+        for (int i = 0; i < S__PhoneNumbers.length; i++) {
+            if (S__PhoneNumbers[i].equals(old)) {
+                S__PhoneNumbers[i] = S__New;
+                return;
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        String dobString = (S__Dob != null) ? S__Dob.getTime().toString() : "Not set";
+        return "Name: " + S__FirstName + " " + S__LastName + "\nPhone Numbers: " + String.join(", ", S__PhoneNumbers)
+                + "\nAffiliation: " + S__Affiliation + "\nOccupation: " + S__Occupation + "\nNote: " + S__Note
+                + "\nDate of Birth: " + dobString + "\nBlocked: " + S__Blocked;
+    }
+}
+
+class Directory {
+    private List<Contact> S__Contacts = new ArrayList<>();
+
+    public void addContact(Contact contact) {
+        S__Contacts.add(contact);
+    }
+
+    public Contact searchContact(String S__FirstName) {
+        for (Contact contact : S__Contacts) {
+            if (contact.getFirstName().equalsIgnoreCase(S__FirstName)) {
+                System.out.println("Found!");
+                return contact;
+            }
+        }
+        System.out.println("Not Found");
+        return null;
+    }
+
+    public void blockContact(String S__FirstName) {
+        Contact contact = searchContact(S__FirstName);
+        if (contact != null) {
+            contact.setBlocked(true);
+            System.out.println(S__FirstName + " has been blocked!");
+        } else {
+            System.out.println("Contact Not Found!");
+        }
+    }
+
+    public void displayAllContacts() {
+        if (S__Contacts.isEmpty()) {
+            System.out.println("No Contacts In Directory!");
+        } else {
+            for (Contact contact : S__Contacts) {
+                System.out.println(contact);
+                System.out.println();
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Directory directory = new Directory();
+
+        while (true) {
+            System.out.println("\n--- Menu ---");
+            System.out.println("1. Add Contact");
+            System.out.println("2. Search Contact");
+            System.out.println("3. Block Contact");
+            System.out.println("4. Display All Contacts");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Enter first name: ");
+                    String S__FirstName = scanner.nextLine();
+                    System.out.print("Enter last name: ");
+                    String S__LastName = scanner.nextLine();
+                    System.out.print("Enter number of phone numbers: ");
+                    int numPhones = scanner.nextInt();
+                    scanner.nextLine();
+
+                    String[] S__PhoneNumbers = new String[numPhones];
+                    for (int i = 0; i < numPhones; i++) {
+                        System.out.print("Enter phone number " + (i + 1) + ": ");
+                        S__PhoneNumbers[i] = scanner.nextLine();
+                    }
+
+                    System.out.print("Enter affiliation: ");
+                    String S__Affiliation = scanner.nextLine();
+                    System.out.print("Enter occupation: ");
+                    String S__Occupation = scanner.nextLine();
+                    System.out.print("Enter note: ");
+                    String S__Note = scanner.nextLine();
+                    System.out.print("Enter date of birth (yyyy mm dd): ");
+                    int year = scanner.nextInt();
+                    int month = scanner.nextInt();
+                    int day = scanner.nextInt();
+                    scanner.nextLine();
+
+                    GregorianCalendar S__Dob = new GregorianCalendar(year, month, day);
+
+                    Contact newContact = new Contact(S__FirstName, S__LastName, S__PhoneNumbers, S__Affiliation, S__Occupation, S__Note, S__Dob);
+                    directory.addContact(newContact);
+  System.out.println("Contact added.");
+   }
+   case 2 -> {
+  System.out.print("Enter first name to search: ");
+ String S__SearchName = scanner.nextLine();
+Contact contact = directory.searchContact(S__SearchName);
+  if (contact != null) {
+ System.out.println("Contact found:\n" + contact);
+ } else {
+  System.out.println("Contact not found.");
+   }
+  }
+  case 3 -> {
+  System.out.print("Enter first name to block: ");
+   String S__BlockName = scanner.nextLine();
+  directory.blockContact(S__BlockName);
+ }
+case 4 -> directory.displayAllContacts();
+   case 5 -> {
+   System.out.println("Exiting application.");
+   scanner.close();
+  return;
+}   
+default -> System.out.println("Invalid option, try again.");
+}
+}
+}
+}
